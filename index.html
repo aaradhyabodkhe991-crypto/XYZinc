@@ -14,21 +14,7 @@
 
     body {
       background-color: #111;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: background-image 1s ease-in-out;
       position: relative;
-    }
-
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      pointer-events: none;
-      z-index: 0;
     }
 
     .navbar {
@@ -84,7 +70,6 @@
       color: #ddd;
     }
 
-    /* Portrait image grid */
     .portrait-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -106,7 +91,6 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
 
-    /* Chat */
     #chat-container {
       margin-top: 50px;
       text-align: left;
@@ -147,12 +131,10 @@
       display: none;
       margin-top: 5px;
     }
-
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
   <div class="navbar">
     <h1>NET Admin</h1>
     <div class="nav-links">
@@ -174,14 +156,6 @@
       <img src="img1.png" alt="Portrait 1">
       <img src="img2.png" alt="Portrait 2">
       <img src="img3.png" alt="Portrait 3">
-      <img src="img4.png" alt="Portrait 4">
-      <img src="img5.png" alt="Portrait 5">
-      <img src="img6.png" alt="Portrait 6">
-      <img src="img7.png" alt="Portrait 7">
-      <img src="img8.png" alt="Portrait 8">
-      <img src="img9.png" alt="Portrait 9">
-      <img src="img10.png" alt="Portrait 10">
-      <img src="img11.png" alt="Portrait 11">
     </div>
 
     <div id="chat-container">
@@ -193,12 +167,7 @@
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
   <script>
-    // === Verified user check ===
     const verifiedUser = localStorage.getItem("verifiedUser");
     const welcomeUser = document.getElementById("welcomeUser");
     const chatInput = document.getElementById("chat-input");
@@ -214,59 +183,35 @@
       chatWarning.style.display = "block";
     }
 
-    // === Rotating backgrounds ===
-    const backgrounds = ['bg1.png','bg2.png','bg3.png','bg4.png'];
-    let current = 0;
-    function changeBackground() {
-      document.body.style.backgroundImage = `url('${backgrounds[current]}')`;
-      current = (current + 1) % backgrounds.length;
+    // Load messages from localStorage
+    let messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+
+    function displayMessages() {
+      chatBox.innerHTML = "";
+      messages.forEach(msg => {
+        const div = document.createElement("div");
+        div.textContent = `${msg.user}: ${msg.message}`;
+        chatBox.appendChild(div);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
-    changeBackground();
-    setInterval(changeBackground, 10000);
 
-    // === Firebase setup ===
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    displayMessages();
 
     // Send message
     chatSend.addEventListener("click", () => {
       const msg = chatInput.value.trim();
       if (!msg) return;
-
-      db.ref("messages").push({
-        user: verifiedUser,
-        message: msg,
-        timestamp: Date.now()
-      });
+      const messageObj = { user: verifiedUser, message: msg };
+      messages.push(messageObj);
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
       chatInput.value = "";
+      displayMessages();
     });
 
-    // Load messages & remove old ones
-    db.ref("messages").orderByChild("timestamp").limitToLast(100).on("value", snapshot => {
-      chatBox.innerHTML = "";
-      const now = Date.now();
-      snapshot.forEach(child => {
-        const msgData = child.val();
-        // Remove if older than 1 day
-        if (now - msgData.timestamp > 24*60*60*1000) {
-          db.ref("messages").child(child.key).remove();
-          return;
-        }
-        const div = document.createElement("div");
-        div.textContent = `${msgData.user}: ${msgData.message}`;
-        chatBox.appendChild(div);
-      });
-      chatBox.scrollTop = chatBox.scrollHeight;
+    // Optional: press Enter to send
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") chatSend.click();
     });
   </script>
 </body>
