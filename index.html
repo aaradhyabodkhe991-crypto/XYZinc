@@ -14,27 +14,25 @@
 
     body {
       background-color: #111;
-      background-size: cover;       /* full-page background */
+      background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       transition: background-image 1s ease-in-out;
       position: relative;
     }
 
-    /* Dull overlay so content is readable */
     body::before {
       content: "";
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); /* 50% dark */
+      background: rgba(0,0,0,0.5);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Navbar */
     .navbar {
-      background-color: rgba(28, 28, 28, 0.9);
+      background-color: rgba(28,28,28,0.9);
       padding: 12px 20px;
       display: flex;
       align-items: center;
@@ -69,7 +67,6 @@
       background-color: #2a2a2a;
     }
 
-    /* Main content */
     .content {
       position: relative;
       z-index: 10;
@@ -98,7 +95,7 @@
     .portrait-grid img {
       width: 100%;
       height: auto;
-      border-radius: 12px; /* smooth corners */
+      border-radius: 12px;
       object-fit: cover;
       transition: transform 0.3s, box-shadow 0.3s;
       cursor: pointer;
@@ -108,6 +105,49 @@
       transform: scale(1.05);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
+
+    /* Chat */
+    #chat-container {
+      margin-top: 50px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #chat-box {
+      height: 300px;
+      overflow-y: auto;
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+    }
+
+    #chat-input {
+      width: 75%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    #chat-send {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      background: #00a2ff;
+      color: white;
+      cursor: pointer;
+    }
+
+    #chat-warning {
+      color: red;
+      display: none;
+      margin-top: 5px;
+    }
+
   </style>
 </head>
 <body>
@@ -124,7 +164,6 @@
     </div>
   </div>
 
-  <!-- Main content -->
   <div class="content">
     <h2>Welcome to NET Admin</h2>
     <p>This is the main hub. Use the navigation bar above to explore Info, Verify, Updates, and Rank features.</p>
@@ -144,39 +183,91 @@
       <img src="img10.png" alt="Portrait 10">
       <img src="img11.png" alt="Portrait 11">
     </div>
+
+    <div id="chat-container">
+      <h3>Global Chat</h3>
+      <div id="chat-box"></div>
+      <input id="chat-input" type="text" placeholder="Type a message...">
+      <button id="chat-send">Send</button>
+      <p id="chat-warning">You must be verified to chat.</p>
+    </div>
   </div>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <script>
-    // Show welcome message if verified
-    const user = localStorage.getItem("verifiedUser");
-    if (user) {
-      document.getElementById("welcomeUser").textContent =
-        `✅ Welcome ${user}, we have verified that it is you.`;
+    // === Verified user check ===
+    const verifiedUser = localStorage.getItem("verifiedUser");
+    const welcomeUser = document.getElementById("welcomeUser");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+    const chatWarning = document.getElementById("chat-warning");
+    const chatBox = document.getElementById("chat-box");
+
+    if (verifiedUser) {
+      welcomeUser.textContent = `✅ Welcome ${verifiedUser}, we have verified that it is you.`;
+    } else {
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+      chatWarning.style.display = "block";
     }
 
-    // Rotating background images
-    const backgrounds = [
-      'bg1.png',
-      'bg2.png',
-      'bg3.png',
-      'bg4.png'
-    ];
-
+    // === Rotating backgrounds ===
+    const backgrounds = ['bg1.png','bg2.png','bg3.png','bg4.png'];
     let current = 0;
-
     function changeBackground() {
       document.body.style.backgroundImage = `url('${backgrounds[current]}')`;
       current = (current + 1) % backgrounds.length;
     }
-
-    // Initial background
     changeBackground();
-    // Rotate every 10 seconds
     setInterval(changeBackground, 10000);
-  </script>
 
+    // === Firebase setup ===
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Send message
+    chatSend.addEventListener("click", () => {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      db.ref("messages").push({
+        user: verifiedUser,
+        message: msg,
+        timestamp: Date.now()
+      });
+      chatInput.value = "";
+    });
+
+    // Load messages & remove old ones
+    db.ref("messages").orderByChild("timestamp").limitToLast(100).on("value", snapshot => {
+      chatBox.innerHTML = "";
+      const now = Date.now();
+      snapshot.forEach(child => {
+        const msgData = child.val();
+        // Remove if older than 1 day
+        if (now - msgData.timestamp > 24*60*60*1000) {
+          db.ref("messages").child(child.key).remove();
+          return;
+        }
+        const div = document.createElement("div");
+        div.textContent = `${msgData.user}: ${msgData.message}`;
+        chatBox.appendChild(div);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
 </body>
 </html>
-
-
-
