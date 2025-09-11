@@ -4,15 +4,32 @@
   <meta charset="UTF-8">
   <title>NET Admin</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: Arial, sans-serif;
       color: white;
+    }
+
+    body {
       background-color: #111;
-      /* Default background in case images fail */
-      background-size: cover;
-      background-position: center;
+      background-size: cover;       /* ensures image covers the whole page */
+      background-position: center;  /* centers the image */
+      background-repeat: no-repeat; /* prevent tiling */
       transition: background-image 1s ease-in-out;
+      position: relative;
+    }
+
+    /* Dull overlay frame so the background is not too flashy */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); /* dull frame (50% dark) */
+      pointer-events: none; /* lets clicks pass through */
+      z-index: 0;
     }
 
     /* Top navigation bar */
@@ -54,6 +71,8 @@
 
     /* Main content */
     .content {
+      position: relative; /* sits above overlay */
+      z-index: 10;
       padding: 100px 40px 40px 40px; /* top padding for navbar */
       text-align: center;
     }
@@ -67,6 +86,7 @@
       font-size: 18px;
       color: #ddd;
     }
+
   </style>
 </head>
 <body>
@@ -87,7 +107,7 @@
   <div class="content">
     <h2>Welcome to NET Admin</h2>
     <p>This is the main hub. Use the navigation bar above to explore Info, Verify, Updates, and Rank features.</p>
-    <p id="welcomeUser"></p> <!-- Extra welcome message -->
+    <p id="welcomeUser"></p>
   </div>
 
   <script>
@@ -103,7 +123,7 @@
       'img1.png',
       'img2.png',
       'img3.png',
-      'img4.ing'
+      'img4.png'
     ];
 
     let current = 0;
@@ -121,6 +141,5 @@
 
 </body>
 </html>
-
 
 
