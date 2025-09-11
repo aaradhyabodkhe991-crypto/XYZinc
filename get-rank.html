@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NET Admin - Get Rank</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+    }
+
+    .navbar {
+      background-color: #1c1c1c;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #00a2ff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-links a:hover {
+      background-color: #2a2a2a;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .quiz {
+      display: none;
+    }
+
+    .question {
+      margin-bottom: 20px;
+      background: #1c1c1c;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    button {
+      background-color: #00a2ff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #0080cc;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #00ff99;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <h1>NET Admin</h1>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="info.html">Info</a>
+      <a href="verify.html">Verify</a>
+      <a href="updates.html">Updates</a>
+      <a href="get-rank.html">Get Rank</a>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <h2>Apply for Rank</h2>
+    <div id="verifyWarning" class="error"></div>
+
+    <div class="quiz" id="quizBox">
+      <form id="quizForm">
+        <div class="question">
+          <p>1. What will you do if you see a hacker?</p>
+          <label><input type="radio" name="q1" value="correct"> Report to admins immediately</label><br>
+          <label><input type="radio" name="q1" value="wrong"> Ignore it</label><br>
+          <label><input type="radio" name="q1" value="wrong"> Try to hack back</label>
+        </div>
+
+        <div class="question">
+          <p>2. What will you do if you meet a toxic player?</p>
+          <label><input type="radio" name="q2" value="correct"> Stay calm and report them</label><br>
+          <label><input type="radio" name="q2" value="wrong"> Be toxic back</label><br>
+          <label><input type="radio" name="q2" value="wrong"> Leave the game forever</label>
+        </div>
+
+        <div class="question">
+          <p>3. What will you do if someone bribes you?</p>
+          <label><input type="radio" name="q3" value="correct"> Refuse and report it</label><br>
+          <label><input type="radio" name="q3" value="wrong"> Accept the bribe</label><br>
+          <label><input type="radio" name="q3" value="wrong"> Keep it a secret</label>
+        </div>
+
+        <div class="question">
+          <p>4. What is the main responsibility of a staff member?</p>
+          <label><input type="radio" name="q4" value="correct"> Keep the community safe and fair</label><br>
+          <label><input type="radio" name="q4" value="wrong"> Show off power</label><br>
+          <label><input type="radio" name="q4" value="wrong"> Kick random players</label>
+        </div>
+
+        <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+      </form>
+
+      <div class="result" id="resultBox"></div>
+    </div>
+  </div>
+
+  <script>
+    const user = localStorage.getItem("verifiedUser");
+    const verifyWarning = document.getElementById("verifyWarning");
+    const quizBox = document.getElementById("quizBox");
+    const resultBox = document.getElementById("resultBox");
+
+    if (!user) {
+      verifyWarning.textContent = "⚠ You must verify before applying. Go to Verify page.";
+    } else {
+      quizBox.style.display = "block";
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      const form = document.getElementById("quizForm");
+      const answers = new FormData(form);
+
+      for (let [key, value] of answers.entries()) {
+        if (value === "correct") {
+          score += 25; // 4 questions = 25 each
+        }
+      }
+
+      if (score >= 99) {
+        resultBox.innerHTML = `🎉 Excellent, ${user}! You scored ${score}/100.<br>
+        Please email <b>aaradhyabodkhe6@gmail.com</b> with your Roblox username to claim your rank.`;
+      } else {
+        resultBox.textContent = `You scored ${score}/100. Try again to qualify for rank.`;
+      }
+    }
+  </script>
+</body>
+</html>

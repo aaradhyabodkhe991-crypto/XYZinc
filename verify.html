@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NET Admin - Verify</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background: #1c1c1c;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #00a2ff;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #00a2ff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #0080cc;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Verify Account</h2>
+    <input type="text" id="username" placeholder="Enter Username"><br>
+    <input type="password" id="password" placeholder="Enter Password"><br>
+    <button id="loginBtn">Login</button>
+    <p class="error" id="errorMsg"></p>
+  </div>
+
+  <script>
+    const loginBtn = document.getElementById("loginBtn");
+    const errorMsg = document.getElementById("errorMsg");
+
+    // Multiple accounts table
+    const ACCOUNTS = [
+      { user: "ANSH", pass: "QAZPLM" },
+      { user: "SOHAM", pass: "123098" },
+      { user: "BASEN", pass: "QWEPOI" },
+      { user: "ANVAY", pass: "QWEPOI" },
+      { user: "AARADHYA", pass: "AARUYT" },
+    ];
+
+    loginBtn.addEventListener("click", () => {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+
+      // Try to find a matching account
+      const account = ACCOUNTS.find(acc => acc.user === user && acc.pass === pass);
+
+      if (account) {
+        localStorage.setItem("verifiedUser", account.user);
+        window.location.href = "index.html";
+      } else {
+        errorMsg.textContent = "❌ Invalid username or password";
+      }
+    });
+  </script>
+</body>
+</html>
+
