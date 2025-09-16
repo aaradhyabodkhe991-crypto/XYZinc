@@ -209,28 +209,33 @@
   </div>
 
   <script>
-    // redeem function now inside script
+    // 🔹 Redeem Function
     async function redeem() {
       const username = document.getElementById("username").value;
       const userId = document.getElementById("userid").value;
       const code = document.getElementById("code").value;
 
-      const res = await fetch("/redeem", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Secret": "super-secret-key" // must match server SECRET
-        },
-        body: JSON.stringify({ username, userId, code })
-      });
-      const data = await res.json();
-      document.getElementById("result").innerText =
-        data.success
-          ? `✅ Success: ${data.message}, Amount: ${data.amount}`
-          : `❌ Error: ${data.message}`;
+      try {
+        const res = await fetch("/redeem", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth-Secret": "super-secret-key" // must match server SECRET
+          },
+          body: JSON.stringify({ username, userId, code })
+        });
+
+        const data = await res.json();
+        document.getElementById("result").innerText =
+          data.success
+            ? `✅ Success: ${data.message}, Amount: ${data.amount}`
+            : `❌ Error: ${data.message}`;
+      } catch (err) {
+        document.getElementById("result").innerText = "❌ Server error";
+      }
     }
 
-    // handle verified user + chat lock
+    // 🔹 Handle Verified User
     const verifiedUser = localStorage.getItem("verifiedUser");
     const welcomeUser = document.getElementById("welcomeUser");
     const chatInput = document.getElementById("chat-input");
@@ -248,5 +253,6 @@
   </script>
 </body>
 </html>
+
 
 
