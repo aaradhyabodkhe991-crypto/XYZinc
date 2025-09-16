@@ -91,6 +91,38 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
 
+    .redeem-box {
+      margin-top: 40px;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .redeem-box input {
+      width: 90%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      margin: 6px 0;
+    }
+
+    .redeem-box button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      background: #00a2ff;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .redeem-box button:hover {
+      background: #007acc;
+    }
+
     #chat-container {
       margin-top: 50px;
       text-align: left;
@@ -166,9 +198,39 @@
       <img src="img11.png" alt="Portrait 11">
     </div>
 
-
+    <div class="redeem-box">
+      <h2>Redeem Code</h2>
+      <input type="text" id="username" placeholder="Username"><br>
+      <input type="text" id="userid" placeholder="UserId"><br>
+      <input type="text" id="code" placeholder="Enter Code"><br>
+      <button onclick="redeem()">Redeem</button>
+      <div id="result"></div>
+    </div>
+  </div>
 
   <script>
+    // redeem function now inside script
+    async function redeem() {
+      const username = document.getElementById("username").value;
+      const userId = document.getElementById("userid").value;
+      const code = document.getElementById("code").value;
+
+      const res = await fetch("/redeem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Secret": "super-secret-key" // must match server SECRET
+        },
+        body: JSON.stringify({ username, userId, code })
+      });
+      const data = await res.json();
+      document.getElementById("result").innerText =
+        data.success
+          ? `✅ Success: ${data.message}, Amount: ${data.amount}`
+          : `❌ Error: ${data.message}`;
+    }
+
+    // handle verified user + chat lock
     const verifiedUser = localStorage.getItem("verifiedUser");
     const welcomeUser = document.getElementById("welcomeUser");
     const chatInput = document.getElementById("chat-input");
@@ -179,9 +241,9 @@
     if (verifiedUser) {
       welcomeUser.textContent = `✅ Welcome ${verifiedUser}, we have verified that it is you.`;
     } else {
-      chatInput.disabled = true;
-      chatSend.disabled = true;
-      chatWarning.style.display = "block";
+      if (chatInput) chatInput.disabled = true;
+      if (chatSend) chatSend.disabled = true;
+      if (chatWarning) chatWarning.style.display = "block";
     }
   </script>
 </body>
