@@ -123,45 +123,9 @@
       background: #007acc;
     }
 
-    #chat-container {
-      margin-top: 50px;
-      text-align: left;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #chat-box {
-      height: 300px;
-      overflow-y: auto;
-      background: #222;
-      padding: 10px;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-    }
-
-    #chat-input {
-      width: 75%;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
+    #result {
       margin-top: 10px;
-    }
-
-    #chat-send {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: none;
-      background: #00a2ff;
-      color: white;
-      cursor: pointer;
-    }
-
-    #chat-warning {
-      color: red;
-      display: none;
-      margin-top: 5px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -209,50 +173,56 @@
   </div>
 
   <script>
-    // 🔹 Redeem Function
-    async function redeem() {
-      const username = document.getElementById("username").value;
-      const userId = document.getElementById("userid").value;
-      const code = document.getElementById("code").value;
+    // 🔹 Example codes (you can add more here)
+    let codes = {
+      "WELCOME100": { amount: 10000, used: false },
+      "FREE500": { amount: 500, used: false },
+      "SECRET200": { amount: 200, used: false }
+    };
 
-      try {
-        const res = await fetch("/redeem", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Auth-Secret": "super-secret-key" // must match server SECRET
-          },
-          body: JSON.stringify({ username, userId, code })
-        });
+    // 🔹 Track used codes per browser
+    let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "{}");
 
-        const data = await res.json();
-        document.getElementById("result").innerText =
-          data.success
-            ? `✅ Success: ${data.message}, Amount: ${data.amount}`
-            : `❌ Error: ${data.message}`;
-      } catch (err) {
-        document.getElementById("result").innerText = "❌ Server error";
+    function redeem() {
+      const username = document.getElementById("username").value.trim();
+      const userId = document.getElementById("userid").value.trim();
+      const code = document.getElementById("code").value.trim().toUpperCase();
+      const result = document.getElementById("result");
+
+      if (!username || !userId || !code) {
+        result.textContent = "⚠ Please fill all fields.";
+        result.style.color = "orange";
+        return;
       }
+
+      if (!codes[code]) {
+        result.textContent = "❌ Invalid code.";
+        result.style.color = "red";
+        return;
+      }
+
+      if (usedCodes[code]) {
+        result.textContent = "❌ Code already used.";
+        result.style.color = "red";
+        return;
+      }
+
+      // ✅ Success
+      usedCodes[code] = { username, userId };
+      localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+
+      result.textContent = `✅ ${username} redeemed ${codes[code].amount} coins!`;
+      result.style.color = "lime";
     }
 
-    // 🔹 Handle Verified User
+    // 🔹 Welcome text (if verified user stored earlier)
     const verifiedUser = localStorage.getItem("verifiedUser");
     const welcomeUser = document.getElementById("welcomeUser");
-    const chatInput = document.getElementById("chat-input");
-    const chatSend = document.getElementById("chat-send");
-    const chatWarning = document.getElementById("chat-warning");
-    const chatBox = document.getElementById("chat-box");
-
     if (verifiedUser) {
-      welcomeUser.textContent = `✅ Welcome ${verifiedUser}, we have verified that it is you.`;
-    } else {
-      if (chatInput) chatInput.disabled = true;
-      if (chatSend) chatSend.disabled = true;
-      if (chatWarning) chatWarning.style.display = "block";
+      welcomeUser.textContent = `✅ Welcome ${verifiedUser}, verified successfully.`;
     }
   </script>
 </body>
 </html>
-
 
 
