@@ -1,228 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NET Admin</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      color: white;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>XUZ.net</title>
+<style>
+    :root {
+        --transition: 0.3s ease;
+    }
+
+    body.light {
+        --bg: #f5f5ff;
+        --fg: #1a1a1a;
+        --primary: #6a5acd;
+        --secondary: #4a3cff;
+        background: linear-gradient(#ffffff, #e8e8ff);
+    }
+
+    body.dark {
+        --bg: #141414;
+        --fg: #e3e3e3;
+        --primary: #7a6cff;
+        --secondary: #5d4cff;
+        background: linear-gradient(#1a1a1a, #0d0d0d);
     }
 
     body {
-      background-color: #111;
-      position: relative;
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        transition: background var(--transition), color var(--transition);
     }
 
-    .navbar {
-      background-color: rgba(28,28,28,0.9);
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 100;
+    nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--bg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
-    .navbar h1 {
-      margin: 0;
-      font-size: 20px;
-      color: #00a2ff;
+    nav h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--primary);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
+    nav .nav-links {
+        display: flex;
+        gap: 15px;
     }
 
-    .nav-links a {
-      text-decoration: none;
-      color: white;
-      font-size: 16px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: background 0.2s;
+    nav a {
+        color: var(--fg);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color var(--transition);
     }
 
-    .nav-links a:hover {
-      background-color: #2a2a2a;
+    nav a:hover {
+        color: var(--primary);
     }
 
-    .content {
-      position: relative;
-      z-index: 10;
-      padding: 100px 40px 40px 40px;
-      text-align: center;
+    .hero {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        background: url('https://images.unsplash.com/photo-1610878180933-6b8996e52c5e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        overflow: hidden;
     }
 
-    .content h2 {
-      color: #00a2ff;
-      font-size: 28px;
+    .hero::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        transition: background 0.5s ease;
     }
 
-    .content p {
-      font-size: 18px;
-      color: #ddd;
+    .hero-content {
+        position: relative;
+        z-index: 2;
     }
 
-    .portrait-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
+    .hero-content h1 {
+        font-size: 3rem;
+        margin: 0;
+        text-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
 
-    .portrait-grid img {
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      object-fit: cover;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
+    .hero-content p {
+        font-size: 1.3rem;
+        margin-top: 10px;
     }
 
-    .portrait-grid img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    .info {
+        text-align: center;
+        padding: 40px 20px;
+        max-width: 1000px;
+        margin: auto;
+        font-size: 1.2rem;
     }
 
-    .redeem-box {
-      margin-top: 40px;
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+    .button-area {
+        text-align: center;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    .redeem-box input {
-      width: 90%;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      margin: 6px 0;
+    .btn {
+        background: #2a2a2a;
+        color: white;
+        width: 160px;
+        height: 160px;
+        margin: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+        border-radius: 22px;
+        cursor: pointer;
+        border: 3px solid rgba(122,108,255,0.4);
+        box-shadow: 0 0 18px rgba(122,108,255,0.4);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease, background 0.3s ease;
     }
 
-    .redeem-box button {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #00a2ff;
-      color: white;
-      cursor: pointer;
-      margin-top: 10px;
+    .btn:hover {
+        transform: translateY(-8px) scale(1.1) rotate(-2deg);
+        border: 3px solid rgba(140,125,255,0.9);
+        box-shadow: 0 0 40px rgba(140,125,255,0.9);
+        background: linear-gradient(135deg, #6a5acd, #4a3cff);
     }
 
-    .redeem-box button:hover {
-      background: #007acc;
+    .links {
+        text-align: center;
+        margin-top: 40px;
+        padding-bottom: 40px;
+        overflow-x: auto;
     }
 
-    #result {
-      margin-top: 10px;
-      font-size: 14px;
+    .links a {
+        margin: 0 15px;
+        font-size: 1.7rem;
+        color: var(--primary);
+        text-decoration: none;
+        transition: color var(--transition);
     }
-  </style>
+
+    .links a:hover {
+        color: var(--secondary);
+    }
+
+    footer {
+        background: black;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    #modeToggle {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6a5acd, #4a3cff);
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-size: 1rem;
+        transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 0 15px rgba(106,92,205,0.6);
+        z-index: 101;
+    }
+
+    #modeToggle:hover {
+        transform: scale(1.15) rotate(-2deg);
+        background: linear-gradient(135deg, #7a6cff, #5d4cff);
+        box-shadow: 0 0 25px rgba(122,108,255,0.8);
+    }
+
+    .light .btn {
+        background: #f0f0f7;
+        color: #1a1a1a;
+        border: 3px solid rgba(106,92,205,0.5);
+        box-shadow: 0 0 15px rgba(106,92,205,0.4);
+        transition: all 0.3s ease;
+    }
+
+    .light .btn:hover {
+        transform: translateY(-8px) scale(1.1) rotate(2deg);
+        background: linear-gradient(135deg, #6a5acd, #4a3cff);
+        border: 3px solid rgba(122,108,255,0.9);
+        box-shadow: 0 0 40px rgba(140,125,255,0.9);
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+<body class="dark">
 
-  <div class="navbar">
-    <h1>NET Admin</h1>
+<nav>
+    <h2>XUZ.net</h2>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="info.html">Info</a>
-      <a href="verify.html">Verify</a>
-      <a href="updates.html">Updates</a>
-      <a href="get-rank.html">Get Rank</a>
+        <a href="#">Home</a>
+        <a href="#games">Games</a>
+        <a href="#events">Events</a>
+        <a href="#join" style="margin-right:0;">Join</a>
     </div>
-  </div>
+</nav>
 
-  <div class="content">
-    <h2>Welcome to NET Admin</h2>
-    <p>This is the main hub. Use the navigation bar above to explore Info, Verify, Updates, and Rank features.</p>
-    <p id="welcomeUser"></p>
+<button id="modeToggle">Light Mode</button>
 
-    <h3>Gallery</h3>
-    <div class="portrait-grid">
-      <img src="img1.png" alt="Portrait 1">
-      <img src="img2.png" alt="Portrait 2">
-      <img src="img3.png" alt="Portrait 3">
-      <img src="img4.png" alt="Portrait 4">
-      <img src="img5.png" alt="Portrait 5">
-      <img src="img6.png" alt="Portrait 6">
-      <img src="img7.png" alt="Portrait 7">
-      <img src="img8.png" alt="Portrait 8">
-      <img src="img9.png" alt="Portrait 9">
-      <img src="img10.png" alt="Portrait 10">
-      <img src="img11.png" alt="Portrait 11">
+<div class="hero">
+    <div class="hero-content">
+        <h1>XUZ.net</h1>
+        <p>Official Roblox Game Group</p>
     </div>
+</div>
 
-    <div class="redeem-box">
-      <h2>Redeem Code</h2>
-      <input type="text" id="username" placeholder="Username"><br>
-      <input type="text" id="userid" placeholder="UserId"><br>
-      <input type="text" id="code" placeholder="Enter Code"><br>
-      <button onclick="redeem()">Redeem</button>
-      <div id="result"></div>
+<section class="info" id="about">
+    <p>
+        XUZ.net is an official <strong>Roblox Redeem Code Platform</strong> for our game.
+        Players can redeem codes here, then join the Roblox game to instantly receive rewards like money, boosts, and items.
+        This system helps keep codes secure and easy to manage.
+    </p>
+</section>
+
+<section class="button-area">
+    <button class="btn">Redeem Codes</button>
+    <button class="btn">Login with Roblox</button>
+    <button class="btn">View Rewards</button>
+    <button class="btn">How It Works</button>
+</section>
+
+<section class="info" id="redeem" style="margin-top:20px;">
+    <h2>Redeem Your Code</h2>
+    <p>Enter your code below. After redeeming, join the game to receive your reward.</p>
+    <div style="margin-top:20px;">
+        <input type="text" placeholder="ENTER CODE" style="padding:15px 20px;border-radius:12px;border:none;font-size:1.1rem;width:260px;max-width:80%;">
+        <br><br>
+        <button class="btn" style="width:200px;height:70px;font-size:1.1rem;">Redeem</button>
     </div>
-  </div>
+</section>
 
-  <script>
-    // 🔹 Example codes (you can add more here)
-    let codes = {
-      "WELCOME100": { amount: 10000, used: false },
-      "FREE500": { amount: 500, used: false },
-      "SECRET200": { amount: 200, used: false }
-    };
+<div class="links">
+    <a href="#"><i class="fa-brands fa-discord"></i> Discord</a>
+    <a href="#"><i class="fa-brands fa-youtube"></i> YouTube</a>
+    <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+</div>
 
-    // 🔹 Track used codes per browser
-    let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "{}");
+<footer>
+    © 2025 XUZ.net — All Rights Reserved
+</footer>
 
-    function redeem() {
-      const username = document.getElementById("username").value.trim();
-      const userId = document.getElementById("userid").value.trim();
-      const code = document.getElementById("code").value.trim().toUpperCase();
-      const result = document.getElementById("result");
+<script>
+const body = document.body;
+const toggle = document.getElementById("modeToggle");
 
-      if (!username || !userId || !code) {
-        result.textContent = "⚠ Please fill all fields.";
-        result.style.color = "orange";
-        return;
-      }
-
-      if (!codes[code]) {
-        result.textContent = "❌ Invalid code.";
-        result.style.color = "red";
-        return;
-      }
-
-      if (usedCodes[code]) {
-        result.textContent = "❌ Code already used.";
-        result.style.color = "red";
-        return;
-      }
-
-      // ✅ Success
-      usedCodes[code] = { username, userId };
-      localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
-
-      result.textContent = `✅ ${username} redeemed ${codes[code].amount} coins!`;
-      result.style.color = "lime";
+toggle.addEventListener("click", () => {
+    if (body.classList.contains("dark")) {
+        body.classList.replace("dark", "light");
+        toggle.innerText = "Dark Mode";
+    } else {
+        body.classList.replace("light", "dark");
+        toggle.innerText = "Light Mode";
     }
+});
+</script>
 
-    // 🔹 Welcome text (if verified user stored earlier)
-    const verifiedUser = localStorage.getItem("verifiedUser");
-    const welcomeUser = document.getElementById("welcomeUser");
-    if (verifiedUser) {
-      welcomeUser.textContent = `✅ Welcome ${verifiedUser}, verified successfully.`;
-    }
-  </script>
 </body>
 </html>
-
-
