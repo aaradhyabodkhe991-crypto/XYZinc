@@ -176,6 +176,7 @@
                 <button class="QuickBtn" onclick="quickAsk('Maths')">Maths</button>
                 <button class="QuickBtn" onclick="quickAsk('Geometry')">Geometry</button>
                 <button class="QuickBtn" onclick="quickAsk('Algebra')">Algebra</button>
+                <button class="QuickBtn" onclick="quickAsk('Roblox')">Net | Roblox</button>
             </div>
         `;
         add(welcome, "AI");
@@ -243,6 +244,15 @@
         if (lower.includes("radius") || lower.includes("circle") || lower.includes("diameter")) {
             return "⭕ <b>Circle Study:</b><br>• Diameter = 2r<br>• Area = πr²<br>• Circumference = 2πr";
         }
+        if (lower.includes("nimy")) return "Did you mean shital";
+        if (lower.includes("bander")) return "Did you mean ashay";
+        if (lower.includes("1tone")) return "Did you mean soham.b";
+        if (lower.includes("dumb")) return "Im using soham.b ai , very small IQ";
+        if (lower.includes("pm of india")) return "N.Modi";
+        if (lower.includes("prime minister")) return "N.Modi";
+        if (lower.includes("who is")) return "Im weak in gk";
+
+        if (lower.includes("roblox")) return "Roblox is a platform where users make games and users play games, it is very popular | here is the website   <b>  https://www.roblox.com/home  </b>   roblox.com  ";
 
         // MATH EVALUATION
         const mathExpression = msg.replace(/[^-e0-9+*/().^]/g, "");
